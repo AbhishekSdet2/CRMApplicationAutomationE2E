@@ -1,5 +1,8 @@
 package com.crm.qa.reporting;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import org.testng.ITestContext;
 import org.testng.ITestListener;
 import org.testng.ITestResult;
@@ -15,9 +18,11 @@ public class ExtentReportManager implements ITestListener{
 	public ExtentSparkReporter sparkReporter; //UI of the report
 	public ExtentReports reports;     // populate common info on the report
 	public ExtentTest test;           //creating test case entries in the report and update status of the test methods
-	
+	String repname;
 	public void onStart(ITestContext context) {
-		sparkReporter=new ExtentSparkReporter("C://Users//abhis//eclipse-workspace//CRMProjectNaveenAutomationLabs//CRMAutomation//reports//myReport.html");
+		String timeStamp=new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date());
+		repname="Test-Report-"+timeStamp+".html";
+		sparkReporter=new ExtentSparkReporter(".\\reports\\"+repname);
 		sparkReporter.config().setDocumentTitle("Automation Report");
 		sparkReporter.config().setReportName("One Big beautiful Report");
 		sparkReporter.config().setTheme(Theme.DARK);
@@ -27,7 +32,7 @@ public class ExtentReportManager implements ITestListener{
 		
 		reports.setSystemInfo("Computer Name", "localhost");
 		reports.setSystemInfo("Environment","prod");
-		reports.setSystemInfo("SDET Name", "Abhishek");
+		reports.setSystemInfo("SDET Name", System.getProperty("user.name"));
 		reports.setSystemInfo("os", "Windows 10");
 		reports.setSystemInfo("Browser Name", "chrome");
 	}
