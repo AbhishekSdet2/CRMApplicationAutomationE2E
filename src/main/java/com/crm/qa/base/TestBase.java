@@ -1,11 +1,16 @@
 package com.crm.qa.base;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.edge.EdgeDriver;
@@ -66,6 +71,16 @@ public class TestBase {
 		driver.manage().timeouts().pageLoadTimeout(TestUtil.PAGE_LOAD_TIMEOUTS, TimeUnit.SECONDS);
 		driver.get(properties.getProperty("url"));
 
+	}
+	
+	public String captureScreen(String tname) throws IOException{
+     String timestamp=new SimpleDateFormat("yyyyMMddhhmmss").format(new Date());
+     TakesScreenshot takesScreenshot=(TakesScreenshot)driver;
+     File sourceFile=takesScreenshot.getScreenshotAs(OutputType.FILE);
+     String targetFilePath=System.getProperty("user.dir")+"\\screenshots\\"+tname+"_"+timestamp;
+     File targetFile=new File(targetFilePath);
+     sourceFile.renameTo(targetFile);
+     return targetFilePath;
 	}
 
 }

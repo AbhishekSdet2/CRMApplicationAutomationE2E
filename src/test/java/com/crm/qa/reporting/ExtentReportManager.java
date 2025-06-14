@@ -1,7 +1,11 @@
 package com.crm.qa.reporting;
 
+import java.io.File;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import java.awt.Desktop;
 
 import org.testng.ITestContext;
 import org.testng.ITestListener;
@@ -12,6 +16,7 @@ import com.aventstack.extentreports.ExtentTest;
 import com.aventstack.extentreports.Status;
 import com.aventstack.extentreports.reporter.ExtentSparkReporter;
 import com.aventstack.extentreports.reporter.configuration.Theme;
+import com.crm.qa.base.TestBase;
 
 public class ExtentReportManager implements ITestListener{
 	
@@ -46,6 +51,13 @@ public class ExtentReportManager implements ITestListener{
 		test=reports.createTest(result.getName());
 		test.log(Status.FAIL, "Test case is Failed"+result.getName());
 		test.log(Status.FAIL, "Test case Failed cause is"+result.getThrowable());
+		try {
+			String imgPath=new TestBase().captureScreen(result.getName());
+			test.addScreenCaptureFromPath(imgPath);
+		}
+		catch(IOException e1) {
+			e1.printStackTrace();
+		}
 	}
 	
 	public void onTestSkipped(ITestResult result) {
@@ -55,6 +67,16 @@ public class ExtentReportManager implements ITestListener{
 	
 	public void onFinish(ITestContext context) {
 		reports.flush();
+		String pathofExtentReport=System.getProperty("user.dir")+"\\reports\\"+repname;
+		File extentReport=new File(pathofExtentReport);
+		try {
+			Desktop desktop = Desktop.getDesktop();
+			desktop.browse(extentReport.toURI());
+		}
+		catch (IOException e) {
+			e.printStackTrace();
+			// TODO: handle exception
+		}
 	}
 
 }
